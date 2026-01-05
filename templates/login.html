@@ -1,0 +1,6 @@
+<form method="post">
+  <input name="username" placeholder="اسم المستخدم" required>
+  <input name="password" type="password" placeholder="كلمة المرور" required>
+  <button>دخول</button>
+  {% if error %}<p>{{error}}</p>{% endif %}
+</form>
