@@ -135,6 +135,8 @@ def main():
     app.add_handler(CallbackQueryHandler(reply_button, pattern="reply_"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, receive_message))
     app.run_polling()
+def main():
+    application.run_polling()
 
 if __name__ == "__main__":
     main()
