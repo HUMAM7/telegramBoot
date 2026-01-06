@@ -1,17 +1,26 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
-import os
 from users import DASHBOARD_USERS
+from telegram import Update
+from telegram.ext import Application
+from bot import build_application
 
 app = Flask(__name__, template_folder="templates")
 app.secret_key = "super-secret-key-change-me"
 
 DB = "bot.db"
+tg_app: Application = build_application()
 
 def get_db():
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     return conn
+
+@app.route("/webhook", methods=["POST"])
+async def telegram_webhook():
+    update = Update.de_json(request.get_json(force=True), tg_app.bot)
+    await tg_app.process_update(update)
+    return "OK"
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
