@@ -1,3 +1,3 @@
 DASHBOARD_USERS = {
-    "humam": "humam"
+    "admin": "12345"
 }
