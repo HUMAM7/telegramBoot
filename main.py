@@ -2,7 +2,12 @@ import threading
 import os
 
 def run_bot():
+    import asyncio
     import bot
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     bot.main()
 
 def run_dashboard():
