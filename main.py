@@ -1,13 +1,9 @@
 import threading
 import os
+import asyncio
 
 def run_bot():
-    import asyncio
     import bot
-
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
     bot.main()
 
 def run_dashboard():
@@ -21,8 +17,7 @@ def run_dashboard():
     )
 
 if __name__ == "__main__":
-    t = threading.Thread(target=run_bot)
-    t.daemon = True
+    t = threading.Thread(target=run_bot, daemon=True)
     t.start()
 
     run_dashboard()
