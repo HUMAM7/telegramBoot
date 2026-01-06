@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
-from users import DASHBOARD_USERS
+import asyncio
+
 from telegram import Update
 from telegram.ext import Application
+
+from users import DASHBOARD_USERS
 from bot import build_application
 
 app = Flask(__name__, template_folder="templates")
@@ -16,12 +19,14 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+# 🔗 Webhook endpoint (SYNC — مهم)
 @app.route("/webhook", methods=["POST"])
-async def telegram_webhook():
+def telegram_webhook():
     update = Update.de_json(request.get_json(force=True), tg_app.bot)
-    await tg_app.process_update(update)
+    asyncio.run(tg_app.process_update(update))
     return "OK"
 
+# 🔐 Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
@@ -39,6 +44,7 @@ def logout():
     session.clear()
     return redirect("/login")
 
+# 📊 Dashboard
 @app.route("/")
 def dashboard():
     if "user" not in session:
