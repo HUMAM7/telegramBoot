@@ -1,6 +1,5 @@
 import threading
 import os
-import asyncio
 
 def run_bot():
     import bot
