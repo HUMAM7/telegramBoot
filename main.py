@@ -1,22 +1,14 @@
-import threading
 import os
+from dashboard import app, tg_app
 
-def run_bot():
-    import bot
-    bot.main()
-
-def run_dashboard():
-    from dashboard import app
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
+
+    tg_app.initialize()
+    tg_app.start()
+
     app.run(
         host="0.0.0.0",
         port=port,
-        use_reloader=False,
-        threaded=True
+        use_reloader=False
     )
-
-if __name__ == "__main__":
-    t = threading.Thread(target=run_bot, daemon=True)
-    t.start()
-
-    run_dashboard()
