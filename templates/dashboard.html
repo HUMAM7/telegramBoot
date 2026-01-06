@@ -1,7 +1,32 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم</title>
+</head>
+<body>
 
-<h3>مرحبًا {{username}}</h3>
-<p>👥 المستخدمون: {{users}}</p>
-<p>📩 الرسائل: {{messages}}</p>
+<h2>مرحبًا {{ username }}</h2>
+<a href="/logout">تسجيل خروج</a>
 
-<a href="/logout">خروج</a>
+<hr>
+
+<p>عدد المستخدمين: {{ users }}</p>
+<p>عدد الرسائل: {{ messages }}</p>
+
+<h3>آخر المستخدمين</h3>
+<ul>
+{% for u in last_users %}
+<li>{{ u["name"] }} - {{ u["username"] }}</li>
+{% endfor %}
+</ul>
+
+<h3>آخر الرسائل</h3>
+<ul>
+{% for m in last_messages %}
+<li>{{ m["name"] }}: {{ m["message"] }}</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>
