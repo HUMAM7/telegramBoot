@@ -1,9 +1,14 @@
-
 import sqlite3
 from datetime import datetime
-from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 import os
+import asyncio
+from telegram import Update
+from telegram.ext import (
+    ApplicationBuilder,
+    MessageHandler,
+    ContextTypes,
+    filters
+)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID"))
@@ -44,23 +49,37 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     cur.execute(
         "INSERT OR IGNORE INTO users VALUES (?, ?, ?, ?)",
-        (user.id, user.first_name, user.username,
-         datetime.now().strftime("%Y-%m-%d %H:%M"))
+        (
+            user.id,
+            user.first_name,
+            user.username,
+            datetime.now().strftime("%Y-%m-%d %H:%M")
+        )
     )
 
     cur.execute(
         "INSERT INTO messages (user_id, message, date) VALUES (?, ?, ?)",
-        (user.id, text, datetime.now().strftime("%Y-%m-%d %H:%M"))
+        (
+            user.id,
+            text,
+            datetime.now().strftime("%Y-%m-%d %H:%M")
+        )
     )
 
     conn.commit()
     conn.close()
 
     await update.message.reply_text("✅ تم استلام رسالتك")
-    await context.bot.send_message(ADMIN_ID, f"📩 رسالة جديدة:\n\n{text}")
+    await context.bot.send_message(
+        ADMIN_ID,
+        f"📩 رسالة جديدة من {user.first_name}:\n\n{text}"
+    )
 
-def main():
+async def start_bot():
     init_db()
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    app.run_polling()
+    await app.run_polling()
+
+def main():
+    asyncio.run(start_bot())
