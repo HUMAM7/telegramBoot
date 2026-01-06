@@ -1,9 +1,9 @@
 import sqlite3
 from datetime import datetime
 import os
-import asyncio
 from telegram import Update
 from telegram.ext import (
+    Application,
     ApplicationBuilder,
     MessageHandler,
     ContextTypes,
@@ -12,7 +12,6 @@ from telegram.ext import (
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID"))
-
 DB = "bot.db"
 
 def init_db():
@@ -75,11 +74,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📩 رسالة جديدة من {user.first_name}:\n\n{text}"
     )
 
-async def start_bot():
+def build_application() -> Application:
     init_db()
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    await app.run_polling()
+    return app
 
-def main():
-    asyncio.run(start_bot())
